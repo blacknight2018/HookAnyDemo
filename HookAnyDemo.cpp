@@ -1,9 +1,10 @@
-﻿// HookAnyDemo.cpp : 此文件包含 "main" 函数。程序执行将在此处开始并结束。
+// HookAnyDemo.cpp : 此文件包含 "main" 函数。程序执行将在此处开始并结束。
 //
 
 #include <iostream>
 #include <Windows.h>
 #include "Hook.h"
+//方式1
 void _declspec(naked) newFunc()
 {
 	/*
@@ -21,11 +22,43 @@ void _declspec(naked) newFunc()
 		ret
 	}
 }
+
+//方式2
+void WINAPI  newFunc2()
+{
+	int param1, param2, param3;
+
+	__asm
+	{
+		mov eax,[ebp+8]
+		mov param1,eax
+
+		mov eax, [ebp + 8+4]
+		mov param2, eax
+
+		mov eax, [ebp + 8+4+4]
+		mov param3, eax
+
+
+	}
+
+
+}
+
 int main()
 {
-	SetDstFunc(newFunc);
+
+	//2个都可以
+	//SetDstFunc(newFunc1);
+	SetDstFunc(newFunc2);
+
 	HookFunc(MessageBoxA);
+	HookFunc(LoadLibraryA);
+	HookFunc(GetModuleHandleA);
+	HookFunc(MessageBoxW);
 	MessageBoxA(NULL, "haha", "okok", MB_OK);
+	GetModuleHandleA("hwll.dll");
 	return 0;
 }
+
 

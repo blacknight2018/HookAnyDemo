@@ -26,7 +26,7 @@ void _declspec(naked) newFunc()
 //方式2
 void WINAPI  newFunc2()
 {
-	int param1, param2, param3;
+	int param1, param2, param3,param4;
 
 	__asm
 	{
@@ -39,23 +39,25 @@ void WINAPI  newFunc2()
 		mov eax, [ebp + 8+4+4]
 		mov param3, eax
 
-
+		mov eax, [ebp + 8 + 4 + 4 +4]
+		mov param4, eax
 	}
 
-
+	//干别的事
 }
-
 int main()
 {
-
 	//2个都可以
 	//SetDstFunc(newFunc1);
 	SetDstFunc(newFunc2);
 
+	//要挂钩的函数
 	HookFunc(MessageBoxA);
 	HookFunc(LoadLibraryA);
 	HookFunc(GetModuleHandleA);
 	HookFunc(MessageBoxW);
+
+	//测试调用
 	MessageBoxA(NULL, "haha", "okok", MB_OK);
 	GetModuleHandleA("hwll.dll");
 	return 0;
